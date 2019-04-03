@@ -13,7 +13,7 @@ class LutronAccessory {
     this.log = log;
     this.platformAccessory = platformAccessory;
     this.config = platformAccessory.context.config;
-    this.homebridgeAPI = api;
+    this.scryptedAPI = api;
 
     this.integrationID = this.config.integrationID;
   }
@@ -28,7 +28,7 @@ class LutronPicoRemoteAccessory extends LutronAccessory {
 	constructor(log, platformAccessory, api) {
     super(log, platformAccessory, api);
 
-    const StatelessProgrammableSwitch = this.homebridgeAPI.hap.Service.StatelessProgrammableSwitch;
+    const StatelessProgrammableSwitch = this.scryptedAPI.hap.Service.StatelessProgrammableSwitch;
     this.switchServicesByButtonNumber = ["2", "4"].reduce((acc, number) => {
       // TODO: more logical switch names.
       const displayName = `Switch ${number}`;
@@ -43,7 +43,7 @@ class LutronPicoRemoteAccessory extends LutronAccessory {
       if (existingService) {
         service = existingService;
       } else {
-        service = new this.homebridgeAPI.hap.Service.StatelessProgrammableSwitch(displayName, number);
+        service = new this.scryptedAPI.hap.Service.StatelessProgrammableSwitch(displayName, number);
         this.platformAccessory.addService(service);
       }
 
@@ -57,7 +57,7 @@ class LutronPicoRemoteAccessory extends LutronAccessory {
     const [serviceNumber, buttonState] = commandFields;
     if (buttonState == PicoRemoteButtonStates.BUTTON_UP) {
       const service = this.switchServicesByButtonNumber[serviceNumber];
-      const characteristic = service.getCharacteristic(this.homebridgeAPI.hap.Characteristic.ProgrammableSwitchEvent);
+      const characteristic = service.getCharacteristic(this.scryptedAPI.hap.Characteristic.ProgrammableSwitchEvent);
       characteristic.setValue(0);
     }
   }
